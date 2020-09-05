@@ -25,4 +25,12 @@ public final class Unit {
     public static Set<Unit> getUNITS() {
         return UNITS;
     }
+
+    public static int getValueByUnit(String unitName) {
+        return UNITS.stream()
+                .filter(unit -> unit.getName().equals(unitName))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException(String.format("No unit preset by name: %s", unitName)))
+                .getValue();
+    }
 }
