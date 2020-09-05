@@ -1,13 +1,11 @@
-package com.example.demo.dao;
+package com.example.demo.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
 @AllArgsConstructor
 @Getter
-@ToString
-public class Promotion {
+public class UnitRequest {
 
     private final String unitName;
     private final int quantity;
