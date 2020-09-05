@@ -1,14 +1,14 @@
 package com.example.demo.dao;
 
 import lombok.Getter;
+import lombok.ToString;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Getter
+@ToString
 public final class ActivePromotions {
 
     private final String promotionId;
@@ -31,15 +31,19 @@ public final class ActivePromotions {
         return ACTIVE_PROMOTIONS;
     }
 
+    public List<Promotion> getPromotions() {
+        return new ArrayList<>(promotions);
+    }
+
     public static final Collection<ActivePromotions> getPromotionByUnitNames(Collection<String> unitNames) {
         return ACTIVE_PROMOTIONS.stream()
                 .filter(byAvailableUnits(unitNames))
                 .collect(Collectors.toSet());
     }
 
-    public final static Optional<ActivePromotions> getPromotionByUnitName(String unitName, Collection<ActivePromotions> activePromotions) {
+    public final static Optional<ActivePromotions> getPromotionByUnitName(String unitName, int actualQuantity, Collection<ActivePromotions> activePromotions) {
         return activePromotions.stream()
-                .filter(byAvailableUnit(unitName))
+                .filter(byAvailableUnit(unitName, actualQuantity))
                 .findFirst();
     }
 
@@ -47,7 +51,7 @@ public final class ActivePromotions {
         return activePromo -> activePromo.promotions.stream().anyMatch(promo -> unitNames.contains(promo.getUnitName()));
     }
 
-    private static Predicate<ActivePromotions> byAvailableUnit(String unitName) {
-        return activePromo -> activePromo.promotions.stream().anyMatch(promo -> promo.equals(unitName));
+    private static Predicate<ActivePromotions> byAvailableUnit(String unitName, int quantity) {
+        return activePromo -> activePromo.promotions.stream().anyMatch(promo -> promo.equals(unitName) && promo.getQuantity() < quantity);
     }
 }
